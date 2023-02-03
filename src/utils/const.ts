@@ -1,6 +1,7 @@
 export enum Errors {
   UserNotFound = 'User not found',
   oldPasswordIsWrong = 'Old password is wrong',
+  ArtistNotFound = 'Artist not found',
 
   RouteNotFound = 'Route not found',
   ServerError = 'Internal server error. Please try again',
