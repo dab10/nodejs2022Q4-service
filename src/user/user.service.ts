@@ -56,7 +56,6 @@ export class UserService {
 
   remove(id: string) {
     const user = this.db.users.find((user) => user.id === id);
-    console.log(user);
     if (!user) {
       throw new NotFoundException(Errors.UserNotFound);
     }
