@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { Errors } from 'src/utils/const';
 
 @Injectable()
 export class AlbumService {
@@ -32,7 +37,7 @@ export class AlbumService {
         createAlbumDto.year,
         artistId,
       );
-      this.db.tracks.push(newAlbum);
+      this.db.albums.push(newAlbum);
       return newAlbum;
     } else {
       if (
@@ -52,18 +57,67 @@ export class AlbumService {
   }
 
   findAll() {
-    return `This action returns all album`;
+    return this.db.albums;
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} album`;
+    const album = this.db.albums.find((album) => album.id === id);
+    if (!album) {
+      throw new NotFoundException(Errors.AlbumNotFound);
+    }
+    return album;
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+    const index = this.db.albums.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new NotFoundException(Errors.AlbumNotFound);
+    }
+
+    if (
+      (typeof updateAlbumDto.artistId === 'string' &&
+        updateAlbumDto.artistId.length !== 0) ||
+      (typeof updateAlbumDto.artistId !== 'string' &&
+        updateAlbumDto.artistId === null)
+    ) {
+      let artistId = null;
+
+      const isIncludeArtistId = this.db.artists.includes(
+        updateAlbumDto.artistId,
+      );
+
+      if (isIncludeArtistId) {
+        artistId = updateAlbumDto.artistId;
+      }
+
+      const album = this.db.albums[index];
+      album.name = updateAlbumDto.name;
+      album.year = updateAlbumDto.year;
+      album.artistId = artistId;
+
+      return album;
+    } else {
+      if (
+        typeof updateAlbumDto.artistId === 'string' &&
+        updateAlbumDto.artistId.length === 0
+      ) {
+        throw new BadRequestException('artistId should not be empty');
+      }
+      if (typeof updateAlbumDto.artistId !== 'string') {
+        throw new BadRequestException('artistId must be a string or null');
+      } else {
+        throw new BadRequestException(
+          'check field: artistId should not be empty, artistId must be a string or null',
+        );
+      }
+    }
   }
 
   remove(id: string) {
-    return `This action removes a #${id} album`;
+    const album = this.db.albums.find((album) => album.id === id);
+    if (!album) {
+      throw new NotFoundException(Errors.AlbumNotFound);
+    }
+    this.db.albums = this.db.albums.filter((item) => item.id !== id);
   }
 }

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
@@ -13,6 +12,7 @@ import {
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { Put } from '@nestjs/common/decorators';
 
 @Controller('track')
 export class TrackController {
@@ -34,7 +34,7 @@ export class TrackController {
     return this.trackService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
