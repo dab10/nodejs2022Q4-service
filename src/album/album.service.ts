@@ -23,11 +23,11 @@ export class AlbumService {
     ) {
       let artistId = null;
 
-      const isIncludeArtistId = this.db.artists.includes(
-        createAlbumDto.artistId,
+      const artist = this.db.artists.find(
+        (item) => item.id === createAlbumDto.artistId,
       );
 
-      if (isIncludeArtistId) {
+      if (artist) {
         artistId = createAlbumDto.artistId;
       }
 
@@ -82,11 +82,11 @@ export class AlbumService {
     ) {
       let artistId = null;
 
-      const isIncludeArtistId = this.db.artists.includes(
-        updateAlbumDto.artistId,
+      const artist = this.db.artists.find(
+        (item) => item.id === updateAlbumDto.artistId,
       );
 
-      if (isIncludeArtistId) {
+      if (artist) {
         artistId = updateAlbumDto.artistId;
       }
 

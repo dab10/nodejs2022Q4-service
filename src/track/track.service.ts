@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -24,17 +28,19 @@ export class TrackService {
     ) {
       let artistId = null;
       let albumId = null;
-      const isIncludeArtistId = this.db.artists.includes(
-        createTrackDto.artistId,
+      const artist = this.db.artists.find(
+        (item) => item.id === createTrackDto.artistId,
       );
-      // TODO DB ALBUMS
-      const isIncludeAlbumId = this.db.artists.includes(createTrackDto.albumId);
 
-      if (isIncludeArtistId) {
+      const album = this.db.albums.find(
+        (item) => item.id === createTrackDto.albumId,
+      );
+
+      if (artist) {
         artistId = createTrackDto.artistId;
       }
 
-      if (isIncludeAlbumId) {
+      if (album) {
         albumId = createTrackDto.albumId;
       }
 
@@ -55,18 +61,70 @@ export class TrackService {
   }
 
   findAll() {
-    return `This action returns all track`;
+    return this.db.tracks;
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} track`;
+    const track = this.db.tracks.find((track) => track.id === id);
+    if (!track) {
+      throw new NotFoundException(Errors.TrackNotFound);
+    }
+    return track;
   }
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+    const index = this.db.tracks.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new NotFoundException(Errors.TrackNotFound);
+    }
+
+    if (
+      ((typeof updateTrackDto.artistId === 'string' &&
+        updateTrackDto.artistId.length !== 0) ||
+        (typeof updateTrackDto.artistId !== 'string' &&
+          updateTrackDto.artistId === null)) &&
+      ((typeof updateTrackDto.albumId === 'string' &&
+        updateTrackDto.albumId.length !== 0) ||
+        (typeof updateTrackDto.albumId !== 'string' &&
+          updateTrackDto.albumId === null))
+    ) {
+      let artistId = null;
+      let albumId = null;
+      const artist = this.db.artists.find(
+        (item) => item.id === updateTrackDto.artistId,
+      );
+
+      const album = this.db.albums.find(
+        (item) => item.id === updateTrackDto.albumId,
+      );
+
+      if (artist) {
+        artistId = updateTrackDto.artistId;
+      }
+
+      if (album) {
+        albumId = updateTrackDto.albumId;
+      }
+
+      const track = this.db.tracks[index];
+      track.name = updateTrackDto.name;
+      track.albumId = albumId;
+      track.artistId = artistId;
+      track.duration = updateTrackDto.duration;
+
+      return track;
+    } else {
+      throw new BadRequestException(
+        'check fields: artistId / albumId should not be empty, artistId / albumId must be a string or null',
+      );
+    }
   }
 
   remove(id: string) {
-    return `This action removes a #${id} track`;
+    const track = this.db.tracks.find((track) => track.id === id);
+    if (!track) {
+      throw new NotFoundException(Errors.TrackNotFound);
+    }
+    this.db.tracks = this.db.tracks.filter((item) => item.id !== id);
   }
 }
