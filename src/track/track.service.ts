@@ -7,9 +7,8 @@ import { DbService } from 'src/db/db.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { v4 as uuidv4, validate } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { Errors } from 'src/utils/const';
-import { validate as uuidValidate } from 'uuid';
 
 @Injectable()
 export class TrackService {
