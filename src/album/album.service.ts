@@ -9,10 +9,14 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Errors } from 'src/utils/const';
+import { TrackService } from 'src/track/track.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private db: DbService) {}
+  constructor(
+    private db: DbService,
+    private readonly trackService: TrackService,
+  ) {}
 
   create(createAlbumDto: CreateAlbumDto) {
     if (
@@ -119,5 +123,19 @@ export class AlbumService {
       throw new NotFoundException(Errors.AlbumNotFound);
     }
     this.db.albums = this.db.albums.filter((item) => item.id !== id);
+
+    const tracks = this.trackService.findAll();
+    tracks.forEach((track) => {
+      if (track.albumId === id) {
+        const updateTrackDto = {
+          id: track.id,
+          name: track.name,
+          artistId: track.artistId,
+          albumId: null,
+          duration: track.duration,
+        };
+        this.trackService.update(track.id, updateTrackDto);
+      }
+    });
   }
 }

@@ -5,10 +5,16 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Artist } from './entities/artist.entity';
 import { Errors } from 'src/utils/const';
+import { TrackService } from 'src/track/track.service';
+import { AlbumService } from 'src/album/album.service';
 
 @Injectable()
 export class ArtistService {
-  constructor(private db: DbService) {}
+  constructor(
+    private db: DbService,
+    private readonly trackService: TrackService,
+    private readonly albumService: AlbumService,
+  ) {}
 
   create(createArtistDto: CreateArtistDto) {
     const newArtist = new Artist(
@@ -50,5 +56,32 @@ export class ArtistService {
       throw new NotFoundException(Errors.ArtistNotFound);
     }
     this.db.artists = this.db.artists.filter((item) => item.id !== id);
+
+    const tracks = this.trackService.findAll();
+    tracks.forEach((track) => {
+      if (track.artistId === id) {
+        const updateTrackDto = {
+          id: track.id,
+          name: track.name,
+          artistId: null,
+          albumId: track.albumId,
+          duration: track.duration,
+        };
+        this.trackService.update(track.id, updateTrackDto);
+      }
+    });
+
+    const albums = this.albumService.findAll();
+    albums.forEach((album) => {
+      if (album.albumId === id) {
+        const updateAlbumDto = {
+          id: album.id,
+          name: album.name,
+          year: album.year,
+          artistId: null,
+        };
+        this.albumService.update(album.id, updateAlbumDto);
+      }
+    });
   }
 }
