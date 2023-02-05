@@ -10,12 +10,18 @@ import { Album } from './entities/album.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Errors } from 'src/utils/const';
 import { TrackService } from 'src/track/track.service';
+import { FavsService } from 'src/favs/favs.service';
+import { Inject } from '@nestjs/common/decorators';
+import { forwardRef } from '@nestjs/common/utils';
 
 @Injectable()
 export class AlbumService {
   constructor(
     private db: DbService,
+    @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
+    @Inject(forwardRef(() => FavsService))
+    private readonly favsService: FavsService,
   ) {}
 
   create(createAlbumDto: CreateAlbumDto) {
@@ -137,5 +143,7 @@ export class AlbumService {
         this.trackService.update(track.id, updateTrackDto);
       }
     });
+
+    this.favsService.removeAlbum(id, true);
   }
 }

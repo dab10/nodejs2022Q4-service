@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -7,13 +7,19 @@ import { Artist } from './entities/artist.entity';
 import { Errors } from 'src/utils/const';
 import { TrackService } from 'src/track/track.service';
 import { AlbumService } from 'src/album/album.service';
+import { Inject } from '@nestjs/common/decorators';
+import { FavsService } from 'src/favs/favs.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
     private db: DbService,
+    @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
+    @Inject(forwardRef(() => AlbumService))
     private readonly albumService: AlbumService,
+    @Inject(forwardRef(() => FavsService))
+    private readonly favsService: FavsService,
   ) {}
 
   create(createArtistDto: CreateArtistDto) {
@@ -83,5 +89,7 @@ export class ArtistService {
         this.albumService.update(album.id, updateAlbumDto);
       }
     });
+
+    this.favsService.removeArtist(id, true);
   }
 }

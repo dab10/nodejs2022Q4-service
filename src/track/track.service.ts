@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,10 +11,15 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Errors } from 'src/utils/const';
+import { FavsService } from 'src/favs/favs.service';
 
 @Injectable()
 export class TrackService {
-  constructor(private db: DbService) {}
+  constructor(
+    private db: DbService,
+    @Inject(forwardRef(() => FavsService))
+    private readonly favsService: FavsService,
+  ) {}
 
   create(createTrackDto: CreateTrackDto) {
     if (
@@ -125,5 +132,7 @@ export class TrackService {
       throw new NotFoundException(Errors.TrackNotFound);
     }
     this.db.tracks = this.db.tracks.filter((item) => item.id !== id);
+
+    this.favsService.removeTrack(id, true);
   }
 }
