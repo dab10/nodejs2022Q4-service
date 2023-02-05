@@ -9,7 +9,14 @@ import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 
 @Module({
-  imports: [UserModule, DbModule, ArtistModule, TrackModule, AlbumModule, FavsModule],
+  imports: [
+    UserModule,
+    DbModule,
+    ArtistModule,
+    TrackModule,
+    AlbumModule,
+    FavsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
