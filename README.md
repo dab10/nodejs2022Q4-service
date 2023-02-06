@@ -17,6 +17,10 @@ git clone {repository URL}
 npm install
 ```
 
+## Using .env
+
+Rename file `.env.example` to `.env` and enter the number of port.
+
 ## Running application
 
 ```
@@ -25,6 +29,7 @@ npm start
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+You can also use Postman.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
@@ -64,6 +69,13 @@ npm run lint
 ```
 npm run format
 ```
+
+### Features
+
+- When creating `track` or `album`, the `albumId` and `artistId` fields are mandatory. If the `albumId` or `artistId` is unknown, then `null` value must be assigned.
+- When creating a `track` or `album`, there is no checking of the `albumId` and `artistId` fields for uuid compliance, because according to the task, the value should be `string` or `null`. If the `albumId` or `artistId` does not match the uuid or the corresponding `album` or `artist` is not in the database, the field value will be `null`.
+- `albumId` and `artistId` fields are checked after errors in other fields are corrected.
+- You can add several similar `track`, `album`, `artist` to favorites. This is not fixed, because otherwise there will be an error in the tests.
 
 ### Debugging in VSCode
 
