@@ -27,7 +27,7 @@ export class FavsService {
     if (!track) {
       throw new UnprocessableEntityException(Errors.TrackNotFound);
     }
-    if (!this.db.favs.tracks.includes(track)) this.db.favs.tracks.push(id);
+    this.db.favs.tracks.push(id);
     return { message: 'Track successfully added' };
   }
 
@@ -36,7 +36,7 @@ export class FavsService {
     if (!album) {
       throw new UnprocessableEntityException(Errors.AlbumNotFound);
     }
-    if (!this.db.favs.albums.includes(album)) this.db.favs.albums.push(id);
+    this.db.favs.albums.push(id);
     return { message: 'Album successfully added' };
   }
 
@@ -45,7 +45,7 @@ export class FavsService {
     if (!artist) {
       throw new UnprocessableEntityException(Errors.ArtistNotFound);
     }
-    if (!this.db.favs.artists.includes(artist)) this.db.favs.artists.push(id);
+    this.db.favs.artists.push(id);
     return { message: 'Artist successfully added' };
   }
 
