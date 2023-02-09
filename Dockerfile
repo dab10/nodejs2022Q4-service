@@ -4,7 +4,7 @@ EXPOSE 3000
 
 WORKDIR /hls/app/src
 
-COPY package*.json .
+COPY package.json package-lock.json ./
 
 RUN npm ci
 

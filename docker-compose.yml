@@ -1,0 +1,8 @@
+version: '3.0'
+
+services:
+  my-api:
+    image: my-hsl
+    build: .
+    ports:
+      - 3000:4000
