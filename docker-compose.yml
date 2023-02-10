@@ -1,7 +1,7 @@
 version: '3.0'
 
 services:
-  my-api:
+  my-hsl:
     image: my-hsl
     restart: unless-stopped
     build: .
@@ -9,6 +9,32 @@ services:
       - ${PORT}:${PORT}
     environment:
       PORT: ${PORT}
+    depends_on:
+      - postgres
     volumes:
       - ./:/hls/app/src
       - /usr/src/app/node_modules
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./src/db/.Dockerfile
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - postgres_logs:/var/log/postgresql/postgresql.log
+
+volumes:
+  postgres_data:
+  postgres_logs:
+
+networks:
+  default:
+    driver: bridge
