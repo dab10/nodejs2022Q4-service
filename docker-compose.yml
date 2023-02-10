@@ -3,6 +3,12 @@ version: '3.0'
 services:
   my-api:
     image: my-hsl
+    restart: unless-stopped
     build: .
     ports:
-      - 3000:4000
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+    volumes:
+      - ./:/hls/app/src
+      - /usr/src/app/node_modules

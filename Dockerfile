@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-EXPOSE 3000
+EXPOSE ${PORT}
 
 WORKDIR /hls/app/src
 
@@ -12,4 +12,4 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "npm", "run", "start:dev" ]
