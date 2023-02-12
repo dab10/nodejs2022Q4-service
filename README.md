@@ -8,77 +8,28 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/dab10/nodejs2022Q4-service.git
 ```
 
-## Installing NPM modules
+## Change branch
 
 ```
-npm install
+git checkout containerization
 ```
 
 ## Using .env
 
-Rename file `.env.example` to `.env` and enter the number of port.
+Rename file `.env.example` to `.env`.
 
 ## Running application
 
 ```
-npm start
+npm run docker
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-You can also use Postman.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
+## Running vulnerabilities scanning
 
 ```
-npm run test
+npm run scan:node
+npm run scan:db
 ```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Features
-
-- When creating `track` or `album`, the `albumId` and `artistId` fields are mandatory. If the `albumId` or `artistId` is unknown, then `null` value must be assigned.
-- When creating a `track` or `album`, there is no checking of the `albumId` and `artistId` fields for uuid compliance, because according to the task, the value should be `string` or `null`. If the `albumId` or `artistId` does not match the uuid or the corresponding `album` or `artist` is not in the database, the field value will be `null`.
-- `albumId` and `artistId` fields are checked after errors in other fields are corrected.
-- You can add several similar `track`, `album`, `artist` to favorites. This is not fixed, because otherwise there will be an error in the tests.
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
