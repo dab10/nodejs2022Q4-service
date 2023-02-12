@@ -2,7 +2,7 @@ FROM node:18-alpine
 
 EXPOSE ${PORT}
 
-WORKDIR /hls/app/src
+WORKDIR /usr/app/src
 
 COPY package.json package-lock.json ./
 

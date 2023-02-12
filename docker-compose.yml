@@ -7,20 +7,18 @@ services:
     build: .
     ports:
       - ${PORT}:${PORT}
-    environment:
-      PORT: ${PORT}
     depends_on:
       - postgres
     volumes:
-      - ./:/hls/app/src
-      - /usr/src/app/node_modules
+      - ./:/usr/app/src
+      - /usr/app/src/node_modules
 
   postgres:
     image: postgres
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./src/db/.Dockerfile
+      dockerfile: ./src/db/Dockerfile
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
