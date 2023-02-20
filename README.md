@@ -14,7 +14,7 @@ git clone https://github.com/dab10/nodejs2022Q4-service.git
 ## Change branch
 
 ```
-git checkout containerization
+git checkout database_and_ORM
 ```
 
 ## Using .env
@@ -32,4 +32,16 @@ npm run docker
 ```
 npm run scan:node
 npm run scan:db
+```
+
+## Testing
+
+```
+npm run docker
+```
+
+then in new terminal window run command
+
+```
+npm run test
 ```
