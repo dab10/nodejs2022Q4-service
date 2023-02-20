@@ -11,6 +11,12 @@
 git clone https://github.com/dab10/nodejs2022Q4-service.git
 ```
 
+## Install modules
+
+```
+npm i
+```
+
 ## Change branch
 
 ```
