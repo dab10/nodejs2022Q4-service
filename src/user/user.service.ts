@@ -3,62 +3,63 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DbService } from 'src/db/db.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Errors } from 'src/utils/const';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(private db: DbService) {}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const newUser = new User(
       uuidv4(),
       createUserDto.login,
       createUserDto.password,
       1,
-      Date.now(),
-      Date.now(),
+      new Date(),
+      new Date(),
     );
-    this.db.users.push(newUser);
-    return newUser;
+    return await this.userRepo.save(newUser);
   }
 
-  findAll() {
-    return this.db.users;
+  async findAll() {
+    return await this.userRepo.find();
   }
 
-  findOne(id: string) {
-    const user = this.db.users.find((user) => user.id === id);
+  async findOne(id: string) {
+    const user = await this.userRepo.findOneBy({ id: id });
     if (!user) {
       throw new NotFoundException(Errors.UserNotFound);
     }
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const index = this.db.users.findIndex((item) => item.id === id);
-    if (index === -1) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepo.findOneBy({ id: id });
+    if (!user) {
       throw new NotFoundException(Errors.UserNotFound);
     }
-    const user = this.db.users[index];
+
     if (updateUserDto.oldPassword !== user.password) {
       throw new ForbiddenException(Errors.oldPasswordIsWrong);
     }
     user.password = updateUserDto.newPassword;
     user.version = user.version + 1;
-    user.updatedAt = Date.now();
-    return user;
+    user.updatedAt = new Date();
+    return await this.userRepo.save(user);
   }
 
-  remove(id: string) {
-    const user = this.db.users.find((user) => user.id === id);
+  async remove(id: string) {
+    const user = await this.userRepo.findOneBy({ id: id });
     if (!user) {
       throw new NotFoundException(Errors.UserNotFound);
     }
-    this.db.users = this.db.users.filter((item) => item.id !== id);
+    await this.userRepo.delete(id);
+    return true;
   }
 }
