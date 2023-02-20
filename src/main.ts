@@ -17,7 +17,10 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  const document = await readFile(join(__dirname, '../../', './doc/api.yaml'), 'utf-8');
+  const document = await readFile(
+    join(__dirname, '../../', './doc/api.yaml'),
+    'utf-8',
+  );
   SwaggerModule.setup('doc', app, parse(document));
 
   await app.listen(PORT);
