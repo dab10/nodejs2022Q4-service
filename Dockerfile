@@ -10,4 +10,4 @@ RUN npm ci
 
 COPY . .
 
-CMD [ "npm", "run", "start:dev", "--", "src/main.ts" ]
+CMD [ "npm", "run", "start:dev" ]
