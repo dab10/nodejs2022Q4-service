@@ -4,13 +4,15 @@ services:
   my-hsl:
     image: my-hsl
     restart: unless-stopped
-    build: .
+    build: 
+      dockerfile: Dockerfile
+      context: .
     ports:
       - ${PORT}:${PORT}
     depends_on:
       - postgres
     volumes:
-      - ./:/usr/app/src
+      - .:/usr/app/src
       - /usr/app/src/node_modules
 
   postgres:
